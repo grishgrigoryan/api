@@ -1,0 +1,16 @@
+{
+  "local":{
+    "db": "mongodb://localhost:27017/test",
+    "auth":{
+      "username" : "username",
+      "password" : "password"
+    }
+  },
+  "production":{
+    "db": "mongodb://localhost:27017/test",
+    "auth":{
+      "username" : "username",
+      "password" : "password"
+    }
+  }
+}
