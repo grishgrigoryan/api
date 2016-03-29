@@ -1,7 +1,7 @@
 var config = require('./config');
 var helper = require('./helper');
 
-exports.checkCredentials=function(req) {
+var checkCredentials = function(req) {
     if (!req) {
         throw new TypeError('argument req is required')
     }
@@ -21,10 +21,14 @@ exports.checkCredentials=function(req) {
     return false;
 };
 
-exports.addUnauthorizedHeader=function(res, realm) {
+var addUnauthorizedHeader = function(res, realm) {
     res.statusCode = 401;
     res.setHeader('WWW-Authenticate', 'Basic realm="' + realm + '"');
     res.end('Unauthorized');
+};
+
+module.exports = function(req, res, next) {
+    checkCredentials(req) ? next() :  addUnauthorizedHeader(res);
 };
 
 

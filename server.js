@@ -10,7 +10,9 @@ var userResource = require('./resource/user');
 var basicAuth = require('./utils/basicAuth');
 var config = require('./utils/config');
 
+
 mongoose.connect(config.db);
+
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
@@ -19,19 +21,13 @@ db.once('open', function() {
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-var port = process.env.PORT || 3113;
-
-
-app.use( function (req, res, next) {
-    basicAuth.checkCredentials(req) ? next() :  basicAuth.addUnauthorizedHeader(res);
-});
-
+app.use( basicAuth);
 app.use('/api/topic', topicResource);
 app.use('/api/user', userResource);
 
 
 
-
+//error handlers
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
@@ -39,11 +35,9 @@ app.use(function(req, res, next) {
 });
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
+    res.json({status:err.status,message: err.message});
 });
 
+var port = process.env.PORT || 3113;
 app.listen(port);
 console.log('Magic happens on port ' + port);
